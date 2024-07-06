@@ -1,5 +1,6 @@
+import { TicketsBought } from 'src/tickets_bought/entities/tickets_bought.entity';
 import { Type } from 'src/type/entities/type.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Generated, Unique, OneToMany } from 'typeorm';
 
 @Entity()
 export class User {
@@ -7,9 +8,11 @@ export class User {
   id: number;
   
   @Column()
+  @Generated("uuid")
   generatedKey: string;
 
   @Column()
+  @Unique("unique_email", ["email"])
   email: string;
 
   @Column()
@@ -21,9 +24,13 @@ export class User {
   @Column()
   surname: string;
   
-  @Column()
+  @Column({ default: false })
   doubleAuthActive: boolean;
   
-  @ManyToOne(() => Type, type => type.users)
+  @ManyToOne(() => Type, type => type.users, { onDelete: 'CASCADE' })
   type: Type;
+
+  @OneToMany(() => TicketsBought, ticketBought => ticketBought.user, { onDelete: 'CASCADE' })
+  ticketsBought: TicketsBought;
+  
 }

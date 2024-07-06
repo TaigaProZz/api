@@ -9,6 +9,6 @@ export class Type {
   @Column()
   userType: string
 
-  @OneToMany(() => User, user => user.type)
+  @OneToMany(() => User, user => user.type, { onDelete: 'CASCADE'})
   users: User[];
 }

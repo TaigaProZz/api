@@ -1,3 +1,3 @@
 export class CreateTypeDto {
-  type: string;
+  userType: string;
 }

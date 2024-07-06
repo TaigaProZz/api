@@ -12,8 +12,10 @@ export class UsersService {
     private userRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    return  this.userRepository.save(createUserDto);
+  create(createUserDto: CreateUserDto): Promise<User> {
+    createUserDto.typeId = 1;
+
+    return this.userRepository.save(createUserDto);
   }
 
   findAll(): Promise<User[]> {

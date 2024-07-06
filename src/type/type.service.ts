@@ -12,12 +12,12 @@ export class TypeService {
     private typeRepository: Repository<Type>,
   ) {}
 
-  create(type: Type): Promise<Type> {
-    return this.typeRepository.save(type);
+  create(createTypeDto: CreateTypeDto): Promise<Type> {
+    return this.typeRepository.save(createTypeDto);
   }
 
   findAll() {
-    return this.typeRepository.find({ relations: ['users'] });
+    return this.typeRepository.find();
   }
 
   findOne(id: number): Promise<Type> {

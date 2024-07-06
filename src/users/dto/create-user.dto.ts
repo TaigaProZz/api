@@ -4,5 +4,5 @@ export class CreateUserDto {
   name: string;
   surname: string;
   doubleAuthActive: boolean;
-  type: number;
+  typeId: number;
 }
