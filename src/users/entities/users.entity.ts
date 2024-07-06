@@ -1,6 +1,6 @@
 import { TicketsBought } from 'src/tickets_bought/entities/tickets_bought.entity';
-import { Type } from 'src/type/entities/type.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Generated, Unique, OneToMany } from 'typeorm';
+import { Permission } from 'src/permissions/entities/permission.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Generated, Unique, OneToMany, JoinColumn, JoinTable } from 'typeorm';
 
 @Entity()
 export class User {
@@ -26,11 +26,17 @@ export class User {
   
   @Column({ default: false })
   doubleAuthActive: boolean;
+
+  @Column()
+  permissionId: number;
   
-  @ManyToOne(() => Type, type => type.users, { onDelete: 'CASCADE' })
-  type: Type;
+  @ManyToOne(() => Permission, permission => permission.users, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  permission: Permission;
+
 
   @OneToMany(() => TicketsBought, ticketBought => ticketBought.user, { onDelete: 'CASCADE' })
   ticketsBought: TicketsBought;
-  
 }

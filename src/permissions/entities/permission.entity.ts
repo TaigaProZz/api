@@ -2,13 +2,13 @@ import { User } from "src/users/entities/users.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Type {
+export class Permission {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  userType: string
+  name: string
 
-  @OneToMany(() => User, user => user.type, { onDelete: 'CASCADE'})
+  @OneToMany(() => User, user => user.permission, { onDelete: 'CASCADE' })
   users: User[];
 }
