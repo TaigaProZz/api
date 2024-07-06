@@ -28,6 +28,12 @@ export class UsersService {
     });
   }
 
+  findByEmail(email: string) {
+    return this.userRepository.findOne({
+      where: {email: email}
+    })
+  }
+
   update(id: number, updateUserDto: UpdateUserDto) {
     return this.userRepository.update(id, updateUserDto);
   }
