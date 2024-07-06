@@ -7,13 +7,6 @@ export class TicketsBought {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, user => user.id, { onDelete: 'CASCADE' })
-  @Unique("unique_user", ["user"])
-  user: User[];
-
-  @ManyToOne(() => Ticket, ticket => ticket.id, { onDelete: 'CASCADE' })
-  ticket: Ticket[];
-
   @Column()
   date: Date;
 
@@ -28,4 +21,17 @@ export class TicketsBought {
 
   @Column( {default: false} )
   isScanned: boolean;
+
+  @Column()
+  ticketId: number;
+
+  @Column()
+  userId: number;
+
+  @ManyToOne(() => User, user => user.id, { onDelete: 'CASCADE' })
+  @Unique("unique_user", ["user"])
+  user: User[];
+
+  @ManyToOne(() => Ticket, ticket => ticket.id, { onDelete: 'CASCADE' })
+  ticket: Ticket[];
 }
