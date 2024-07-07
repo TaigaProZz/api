@@ -34,7 +34,6 @@ export class UsersController {
       throw new BadRequestException('Bad request');
     }
   }
-  if
 
   @Get(':id')
   findOne(@Param('id') id: string) {
