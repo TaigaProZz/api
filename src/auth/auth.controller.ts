@@ -1,8 +1,8 @@
-import { Body, Controller, Post, HttpCode, HttpStatus, UseGuards, Get, Request } from '@nestjs/common';
+import { Body, Controller, Post, HttpCode, HttpStatus, Res, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
-import { AuthGuard } from './auth.guard';
 import { Public } from 'src/decorators/publicRoute.decorator';
+import { Request, Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -11,7 +11,25 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Public()
   @Post('login')
-  signIn(@Body() signInDto: AuthDto) {
-    return this.authService.signIn(signInDto.email, signInDto.password);
+  async signIn(@Body() signInDto: AuthDto, @Res() res: Response) {
+    const serviceResponse = await this.authService.signIn(signInDto.email, signInDto.password);
+    const token = serviceResponse.access_token;
+    res.cookie('session', token, {
+      httpOnly: true
+    })
+    return {
+      code: 200,
+      message: 'Successfully logged in !',
+      token: serviceResponse
+    };
+  }
+
+  @Post('logout')
+  logout(@Res() res: Response) {
+    res.clearCookie('session');
+    return {
+      code: 200,
+      message: 'Successfully logged out !'
+    };
   }
 }

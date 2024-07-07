@@ -27,7 +27,8 @@ import { PermissionsGuard } from './permissions/permission.guard';
     TicketsModule,
     TicketsBoughtModule,
     PermissionsModule,
-    AuthModule],
+    AuthModule
+  ],
   providers: [
     {
       provide: APP_GUARD,

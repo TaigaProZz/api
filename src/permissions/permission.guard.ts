@@ -30,7 +30,7 @@ export class PermissionsGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(
         token,
         {
-          secret: "jwt_secret" // to secure
+          secret: process.env.JWT_SECRET
         }
       );
       request['user'] = payload;
