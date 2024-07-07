@@ -1,6 +1,6 @@
 import { TicketsBought } from 'src/tickets_bought/entities/tickets_bought.entity';
 import { Permission } from 'src/permissions/entities/permission.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Generated, Unique, OneToMany, JoinColumn, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Generated, Unique, OneToMany } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
 @Entity()
@@ -10,6 +10,7 @@ export class User {
   
   @Column()
   @Generated("uuid")
+  @Exclude()
   generatedKey: string;
 
   @Column()
