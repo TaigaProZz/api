@@ -3,13 +3,11 @@ import { Controller, Get, Post, Body, Param, Delete, BadRequestException, Put, U
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PermissionsService } from 'src/permissions/permissions.service';
 
 @Controller('user')
 export class UsersController {
   constructor(
-    private readonly usersService: UsersService,
-    private readonly permissionsService: PermissionsService
+    private readonly usersService: UsersService
   ) {}
 
   @UsePipes(new ValidationPipe({ transform: true }))
