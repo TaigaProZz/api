@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
-import { Public } from 'src/decorators/public';
+import { Public } from 'src/decorators/publicRoute.decorator';
 
 @Controller('ticket')
 export class TicketsController {

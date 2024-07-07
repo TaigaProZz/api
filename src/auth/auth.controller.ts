@@ -2,7 +2,7 @@ import { Body, Controller, Post, HttpCode, HttpStatus, UseGuards, Get, Request }
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { AuthGuard } from './auth.guard';
-import { Public } from 'src/decorators/public';
+import { Public } from 'src/decorators/publicRoute.decorator';
 
 @Controller('auth')
 export class AuthController {
