@@ -5,6 +5,8 @@ import { TicketsModule } from './tickets/tickets.module';
 import { TicketsBoughtModule } from './tickets_bought/tickets_bought.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/auth.guard';
 
 @Module({
   imports: [
@@ -25,5 +27,11 @@ import { AuthModule } from './auth/auth.module';
     TicketsBoughtModule,
     PermissionsModule,
     AuthModule],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}
