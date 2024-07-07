@@ -4,6 +4,9 @@ import { IsBoolean, IsEmail, IsString } from 'class-validator';
 import { Exclude } from 'class-transformer';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
+  @Exclude()
+  id: number;
+  
   @IsEmail()
   email: string;
 
