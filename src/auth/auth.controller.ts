@@ -2,7 +2,7 @@ import { Body, Controller, Post, HttpCode, HttpStatus, Res, Req } from '@nestjs/
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { Public } from 'src/decorators/publicRoute.decorator';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -17,19 +17,12 @@ export class AuthController {
     res.cookie('session', token, {
       httpOnly: true
     })
-    return {
-      code: 200,
-      message: 'Successfully logged in !',
-      token: serviceResponse
-    };
+    return res.status(200).send(serviceResponse)
   }
 
   @Post('logout')
   logout(@Res() res: Response) {
     res.clearCookie('session');
-    return {
-      code: 200,
-      message: 'Successfully logged out !'
-    };
+    return res.status(200).send('Successfully logged out')
   }
 }

@@ -1,15 +1,18 @@
 import * as bcrypt from 'bcrypt';
-import { Controller, Get, Post, Body, Param, Delete, BadRequestException, Put, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, BadRequestException, Put, UsePipes, ValidationPipe, Res, Response, Req, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from 'src/decorators/publicRoute.decorator';
 import { Permissions } from 'src/decorators/permission.decorator';
+import { Request } from 'express';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('user')
 export class UsersController {
   constructor(
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService
   ) {}
 
   @Public()
@@ -36,9 +39,18 @@ export class UsersController {
     }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @Get()
+  async findOne(@Param('id') id: string, @Req() req: Request) {
+    const token = req.cookies.session;
+    try {
+      const tokenContent = await this.jwtService.verifyAsync(token)
+      return this.usersService.findOne(+tokenContent.id);
+    } catch (error) {
+      console.log(error.message);
+      if (error.message === 'invalid token') {
+        throw new NotFoundException('Bad token');
+      }
+    }
   }
 
   @Put(':id')
