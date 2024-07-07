@@ -30,7 +30,8 @@ export class UsersService {
 
   findByEmail(email: string) {
     return this.userRepository.findOne({
-      where: {email: email}
+      where: {email: email},
+      relations: ['permission'],
     })
   }
 

@@ -3,6 +3,8 @@ import { Controller, Get, Post, Body, Param, Delete, BadRequestException, Put, U
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Public } from 'src/decorators/publicRoute.decorator';
+import { Permissions } from 'src/decorators/permission.decorator';
 
 @Controller('user')
 export class UsersController {
@@ -10,6 +12,7 @@ export class UsersController {
     private readonly usersService: UsersService
   ) {}
 
+  @Public()
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
@@ -18,12 +21,10 @@ export class UsersController {
     const password = createUserDto.password;
     const hash = await bcrypt.hash(password, saltOrRounds);
     createUserDto.password = hash;
-    
     createUserDto.permissionId = 1;
     
     try {
       await this.usersService.create(createUserDto);  
-      // return code and message    
       return {
         code: 201,
         message: 'User created successfully'
@@ -44,7 +45,7 @@ export class UsersController {
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
-
+  
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);

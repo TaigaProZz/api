@@ -14,10 +14,4 @@ export class AuthController {
   signIn(@Body() signInDto: AuthDto) {
     return this.authService.signIn(signInDto.email, signInDto.password);
   }
-
-  @UseGuards(AuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
-  }
 }
