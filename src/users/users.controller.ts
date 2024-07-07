@@ -6,6 +6,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from 'src/decorators/publicRoute.decorator';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { User } from './entities/users.entity';
 
 @Controller('user')
 export class UsersController {
@@ -53,13 +54,32 @@ export class UsersController {
     }
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @Put()
+  async update(@Req() req: Request, @Body() updateUserDto: UpdateUserDto) {    
+    const token = req.cookies.session;
+    try {
+      const tokenContent: User = await this.jwtService.verifyAsync(token);
+      return this.usersService.update(+tokenContent.id, updateUserDto);
+    } catch (error) {
+      console.log(error.message);
+      if (error.message === 'invalid token') {
+        throw new NotFoundException('Bad token');
+      }
+    }
   }
   
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Delete()
+  async remove(@Req() req: Request) {
+    const token = req.cookies.session;
+    try {
+      const tokenContent: User = await this.jwtService.verifyAsync(token);
+      return this.usersService.remove(+tokenContent.id);
+    } catch (error) {
+      console.log(error.message);
+      if (error.message === 'invalid token') {
+        throw new NotFoundException('Bad token');
+      }
+    }
   }
 }
