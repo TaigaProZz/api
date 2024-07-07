@@ -1,6 +1,7 @@
 import { TicketsBought } from 'src/tickets_bought/entities/tickets_bought.entity';
 import { Permission } from 'src/permissions/entities/permission.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Generated, Unique, OneToMany, JoinColumn, JoinTable } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
@@ -16,6 +17,7 @@ export class User {
   email: string;
 
   @Column()
+  @Exclude()
   password: string;
 
   @Column()
