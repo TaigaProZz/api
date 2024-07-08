@@ -37,8 +37,7 @@ export class User {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  permission: Permission;
-
+  permission: Permission[];
 
   @OneToMany(() => TicketsBought, ticketBought => ticketBought.user, { onDelete: 'CASCADE' })
   ticketsBought: TicketsBought;

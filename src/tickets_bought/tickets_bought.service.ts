@@ -32,9 +32,10 @@ export class TicketsBoughtService {
     return this.ticketsBoughtRepository.find();
   }
 
-  findOne(id: number) {
+  findOne(id: number) {    
     return this.ticketsBoughtRepository.findOne({
-      where: {id: id}
+      where: { userId: id },
+      relations: ['ticket']
     });
   }
 }

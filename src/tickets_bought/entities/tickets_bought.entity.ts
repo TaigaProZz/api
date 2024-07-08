@@ -28,7 +28,10 @@ export class TicketsBought {
   @Column()
   userId: number;
 
-  @ManyToOne(() => User, user => user.id, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, user => user.ticketsBought, { 
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @Unique("unique_user", ["user"])
   user: User[];
 
