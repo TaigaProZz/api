@@ -16,9 +16,6 @@ export class TicketsBought {
   @Column()
   finalKey: string;
 
-  @Column()
-  numberOfPersonsAdmission: number;
-
   @Column( {default: false} )
   isScanned: boolean;
 

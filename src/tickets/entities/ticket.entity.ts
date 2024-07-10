@@ -15,6 +15,12 @@ export class Ticket {
   @Column()
   price: number;
 
+  @Column()
+  numberOfPersonsAdmission: number;
+
+  @Column()
+  stripeProductId: string;
+
   @OneToMany(() => TicketsBought, ticketBought => ticketBought.ticket, { onDelete: 'CASCADE' }) 
   ticketsBought: TicketsBought[];
 }
