@@ -41,13 +41,11 @@ export class UsersController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
-  async findOne(@Req() req: Request) {
-    const token = req.cookies.session;
-    try {
-      const tokenContent = await this.jwtService.verifyAsync(token)
-      return this.usersService.findOne(+tokenContent.id);
+  async findOne(@Req() req: Request) {        
+    try {      
+      return this.usersService.findOne(+req?.user.id);
     } catch (error) {
-      console.log(error.message);
+      console.log("error fetching user : ", error.message);
       if (error.message === 'invalid token') {
         throw new NotFoundException('Bad token');
       }

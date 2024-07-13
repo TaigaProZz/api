@@ -15,7 +15,10 @@ export class AuthController {
     const serviceResponse = await this.authService.signIn(signInDto.email, signInDto.password);
     const token = serviceResponse.access_token;
     res.cookie('session', token, {
-      httpOnly: true
+      httpOnly: true,
+      secure: true,
+      path: '/',
+      sameSite: 'none',
     })
     return res.status(200).send(serviceResponse)
   }
