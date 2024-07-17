@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
 import { PermissionsGuard } from './permissions/permission.guard';
+import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { PermissionsGuard } from './permissions/permission.guard';
     TicketsModule,
     TicketsBoughtModule,
     PermissionsModule,
-    AuthModule
+    AuthModule,
+    StripeModule
   ],
   providers: [
     {

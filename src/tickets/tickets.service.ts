@@ -26,6 +26,12 @@ export class TicketsService {
     });
   }
 
+  findByPriceId(priceId: string) {
+    return this.ticketRepository.findOne({
+      where: { stripeProductId: priceId }
+    });
+  }
+
   update(id: number, updateTicketDto: UpdateTicketDto) {
     return this.ticketRepository.update({id: id}, updateTicketDto);
   }
