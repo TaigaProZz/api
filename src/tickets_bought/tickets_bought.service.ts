@@ -47,14 +47,14 @@ export class TicketsBoughtService {
    
   }
 
-  findAll() {
-    return this.ticketsBoughtRepository.find();
-  }
-
-  findOne(id: number) {    
+  findOneUser(id: number) {    
     return this.ticketsBoughtRepository.findOne({
       where: { userId: id },
       relations: ['ticket']
     });
+  }
+
+  findAll() {
+    return this.ticketsBoughtRepository.find();
   }
 }
