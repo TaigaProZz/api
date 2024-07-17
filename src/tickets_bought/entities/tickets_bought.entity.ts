@@ -7,7 +7,7 @@ export class TicketsBought {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
   date: Date;
 
   @Column()

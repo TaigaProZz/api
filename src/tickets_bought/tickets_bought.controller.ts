@@ -13,12 +13,6 @@ export class TicketsBoughtController {
     private readonly jwtService: JwtService,
   ) {}
 
-  @Permissions('dev')
-  @Post()
-  create(@Body() createTicketsBoughtDto: CreateTicketsBoughtDto) {
-    return this.ticketsBoughtService.create(createTicketsBoughtDto);
-  }
-
   @Get()
   async findOneUser(@Req() req: Request) {
     const token = req.cookies.session;

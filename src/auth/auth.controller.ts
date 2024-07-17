@@ -1,4 +1,4 @@
-import { Body, Controller, Post, HttpCode, HttpStatus, Res, Req } from '@nestjs/common';
+import { Body, Controller, Post, HttpCode, HttpStatus, Res, Req, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { Public } from 'src/decorators/publicRoute.decorator';
@@ -11,7 +11,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Public()
   @Post('login')
-  async signIn(@Body() signInDto: AuthDto, @Res() res: Response) {
+  async signIn(@Body() signInDto: AuthDto, @Res() res: Response) {    
     const serviceResponse = await this.authService.signIn(signInDto.email, signInDto.password);
     const token = serviceResponse.access_token;
     res.cookie('session', token, {
@@ -20,7 +20,7 @@ export class AuthController {
       path: '/',
       sameSite: 'none',
     })
-    return res.status(200).send(serviceResponse)
+    return res.status(200).send("Successfully logged in !")
   }
 
   @Post('logout')

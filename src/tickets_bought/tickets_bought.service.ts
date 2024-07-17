@@ -5,27 +5,46 @@ import { TicketsBought } from './entities/tickets_bought.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { v4 as uuidv4 } from 'uuid'
+import { UsersService } from 'src/users/users.service';
+import { TicketsService } from 'src/tickets/tickets.service';
 
 @Injectable()
 export class TicketsBoughtService {
   constructor(
     @InjectRepository(TicketsBought)
     private ticketsBoughtRepository: Repository<TicketsBought>,
+    private readonly userService: UsersService,
+    private readonly ticketService: TicketsService
   ) {}
 
-  async create(createTicketsBoughtDto: CreateTicketsBoughtDto) {
-    console.log(createTicketsBoughtDto.generatedKey);
-    const myuuid = uuidv4();
-    const userUuid = uuidv4();
+  async create(response: any): Promise<CreateTicketsBoughtDto> {
 
-    createTicketsBoughtDto.generatedKey = myuuid;
+    try {
+      const createTicketsBoughtDto = new CreateTicketsBoughtDto();
 
-    // to adjust later when authorization and token will be implemented
-    createTicketsBoughtDto.finalKey = myuuid + userUuid;
-    createTicketsBoughtDto.userId = 1;
-    createTicketsBoughtDto.ticketId = 1;
-    
-    return this.ticketsBoughtRepository.save(createTicketsBoughtDto)
+      // get generated key of user with user id passed in metadata in webhook
+      const userGeneratedKey = (await this.userService.findOne(response.userId)).generatedKey;
+
+      // get ticket id with price id fetch before in webhook
+      const ticketId = (await this.ticketService.findByPriceId(response.stripePriceId)).id;
+
+      // create and assign unique key for ticket bought
+      const myuuid = uuidv4();
+      createTicketsBoughtDto.generatedKey = myuuid;
+
+      // create final key
+      createTicketsBoughtDto.finalKey = myuuid + userGeneratedKey;
+
+      // assign user id and ticket id
+      createTicketsBoughtDto.userId = response.userId;
+      createTicketsBoughtDto.ticketId = ticketId;
+
+      return this.ticketsBoughtRepository.save(createTicketsBoughtDto)
+    } catch (error) {
+      console.log('error ticket bought : ', error);
+      return error;
+    }
+   
   }
 
   findAll() {
