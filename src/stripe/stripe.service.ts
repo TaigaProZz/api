@@ -8,7 +8,7 @@ export class StripeService {
   private stripe;
 
   constructor() {
-    this.stripe = new Stripe('sk_test_51PL00TGi4gZxSBlJkgNbQgNkeUuARk5inBjaiTdaLZg3kflPY0JrVykUKIW1V2v756LhI70KCey6zduS0AcLt5Ta00RgBAjGx6');
+    this.stripe = new Stripe(process.env.STRIPE_SECRET);
   }
 
   async createCheckout(body: JSON, id: number) {
@@ -37,7 +37,7 @@ export class StripeService {
 
     // verify webhook signature
     try {
-      event = this.stripe.webhooks.constructEvent(payload, sig, 'whsec_ecb65f1eb8e752eb2e88ca9cee2f1fc60b379c59d4c9ba1228b636bc19b47387');      
+      event = this.stripe.webhooks.constructEvent(payload, sig, process.env.STRIPE_WEBHOOK_SECRET);      
     } catch (err) {
       console.log('erreur', err);
       return `Webhook Error: ${err.message}`;
