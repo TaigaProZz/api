@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { Ticket } from "src/tickets/entities/ticket.entity";
 import { User } from "src/users/entities/users.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
@@ -11,11 +12,13 @@ export class TicketsBought {
   date: Date;
 
   @Column()
+  @Exclude()
   generatedKey: string;
 
   @Column()
   finalKey: string;
 
+  @Exclude()
   @Column( {default: false} )
   isScanned: boolean;
 
@@ -23,6 +26,7 @@ export class TicketsBought {
   ticketId: number;
 
   @Column()
+  @Exclude()
   userId: number;
 
   @ManyToOne(() => User, user => user.ticketsBought, { 

@@ -1,4 +1,4 @@
-import { Controller, Get, Req, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Req, NotFoundException, ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
 import { TicketsBoughtService } from './tickets_bought.service';
 import { Permissions } from 'src/decorators/permission.decorator';
 import { Request } from 'express';
@@ -9,6 +9,7 @@ export class TicketsBoughtController {
     private readonly ticketsBoughtService: TicketsBoughtService,
   ) {}
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   async findOneUser(@Req() req: Request) {
     const userId = req?.user.id;
