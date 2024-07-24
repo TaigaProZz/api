@@ -50,14 +50,10 @@ export class StripeService {
         try {
           const session = event.data.object;
           const priceId = await this.getStripePriceId(session.id);
-          console.log("priceId: ", priceId);
-
-          // console.log("session: ", session);
           return { userId: session.metadata.userId, stripePriceId: priceId };
         } catch (error) {
           console.log('error', error);
         }
-
       default:
         console.log(`Unhandled event type ${event.type}`);
     }

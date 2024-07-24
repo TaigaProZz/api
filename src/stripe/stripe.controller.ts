@@ -29,7 +29,6 @@ export class StripeController {
       
       // check if response is not null ( not null when payment is success)
       if(response) {
-        console.log('responseController', response);
         return this.ticketBoughtService.create(response);
       }
       
