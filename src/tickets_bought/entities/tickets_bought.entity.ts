@@ -1,10 +1,10 @@
 import { Exclude } from "class-transformer";
 import { Ticket } from "src/tickets/entities/ticket.entity";
 import { User } from "src/users/entities/users.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 @Entity()
-export class TicketsBought {
+export class TicketsBought extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

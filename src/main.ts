@@ -4,6 +4,8 @@ import { ValidationPipe } from '@nestjs/common';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { dynamicImport } from './config/dynamicImport';
+
 async function bootstrap() {
 
   const app = await NestFactory.create(AppModule, {
@@ -20,6 +22,17 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     disableErrorMessages: true,
   }));
+
+  // adminjs
+  const adminJSModule = await dynamicImport('adminjs');
+  const AdminJS = adminJSModule.default;
+
+  const AdminJSTypeorm = await dynamicImport('@adminjs/typeorm');
+
+  AdminJS.registerAdapter({
+    Resource: AdminJSTypeorm.Resource,
+    Database: AdminJSTypeorm.Database,
+  });
 
   // cookie handler
   app.use(

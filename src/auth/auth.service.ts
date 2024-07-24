@@ -29,4 +29,21 @@ export class AuthService {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
+  
+  async signInBackoffice(resEmail: string, resPassword: string): Promise<any> {
+    // check if user is found
+    const user = await this.usersService.findByEmail(resEmail);
+    if (user === null) {
+      throw new UnauthorizedException("Veuillez vérifier vos identifiants de connexion.")
+    }
+
+    // compare passwords
+    const passMatch = await bcrypt.compare(resPassword, user?.password);
+    if (!passMatch) {
+      throw new UnauthorizedException("Veuillez vérifier vos identifiants de connexion.")
+    }
+
+    return Promise.resolve({email: user.email});
+  }
+
 }

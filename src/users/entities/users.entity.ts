@@ -1,10 +1,10 @@
 import { TicketsBought } from 'src/tickets_bought/entities/tickets_bought.entity';
 import { Permission } from 'src/permissions/entities/permission.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Generated, Unique, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Generated, Unique, OneToMany, BaseEntity } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
 @Entity()
-export class User {
+export class User extends BaseEntity{
   @PrimaryGeneratedColumn()
   id: number;
   
