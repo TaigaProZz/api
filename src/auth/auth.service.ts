@@ -12,7 +12,7 @@ export class AuthService {
 
   async signIn(resEmail: string, resPassword: string): Promise<{access_token: string}> {    
     // check if user is found
-    const user = await this.usersService.findByEmail(resEmail);
+    const user = await this.usersService.findByEmail(resEmail.toLowerCase());
     if (user === null) {
       throw new UnauthorizedException("Veuillez vérifier vos identifiants de connexion.")
     }
@@ -32,8 +32,12 @@ export class AuthService {
   
   async signInBackoffice(resEmail: string, resPassword: string): Promise<any> {
     // check if user is found
-    const user = await this.usersService.findByEmail(resEmail);
+    const user = await this.usersService.findByEmail(resEmail.toLowerCase());
     if (user === null) {
+      throw new UnauthorizedException("Veuillez vérifier vos identifiants de connexion.")
+    }
+    
+    if(user.permission.name !== 'admin') {
       throw new UnauthorizedException("Veuillez vérifier vos identifiants de connexion.")
     }
 
