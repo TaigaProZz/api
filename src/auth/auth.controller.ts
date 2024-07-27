@@ -4,6 +4,7 @@ import { AuthDto } from './dto/auth.dto';
 import { Public } from 'src/decorators/publicRoute.decorator';
 import { Response } from 'express';
 import { UsersService } from 'src/users/users.service';
+import { DoubleFaVerifyDto } from './dto/doubleFa-verify.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -33,11 +34,17 @@ export class AuthController {
 
 
   // 2fa 
+  // to create qr code
   @Post('2fa/setup')
   async setupTwoFactorAuthentication(@Req() req: Request, @Res() res: Response) {
     try {
       const user = req.user;
       
+      const getUser = await this.usersService.findByEmail(user.username);
+      if (getUser.doubleAuthActive) {
+        return res.status(400).send({ message: '2FA is already enabled' });
+      }
+
       // generate secret and otpauth_url
       const { secret, otpauthUrl } = await this.authService.generateTwoFactorSecret(user);
 
@@ -53,14 +60,20 @@ export class AuthController {
     }
   }
 
-  // @Post('2fa/verify')
-  // async verifyTwoFactorAuthentication(@Req() req: Request, @Body('token') token: string) {
-  //   const user = req.user; // Assurez-vous que l'utilisateur est authentifié
-  //   const isValid = await this.authService.verifyTwoFactorToken(user, token);
-  //   if (!isValid) {
-  //     return res.status(400).send('Invalid 2FA token');
-  //   }
+  // to verify the otp token
+  @Post('2fa/verify')
+  async verifyTwoFactorAuthentication(@Req() req: Request, @Body() doubleFaVerifyDto: DoubleFaVerifyDto, @Res() res: Response) {
+    const user = req.user; 
 
-  //   return res.status(200).send('2FA successfully verified and logged in');
-  // }
+    const getUser = await this.usersService.findByEmail(user.username);
+    if (!getUser.doubleAuthActive) {
+      return res.status(400).send({ message: '2FA is not enabled' });
+    }    
+    const isValid = await this.authService.verifyTwoFactorToken(getUser, doubleFaVerifyDto.token);
+    if (!isValid) {
+      return res.status(400).send('Invalid 2FA token');
+    }
+
+    return res.status(200).send('2FA successfully verified and logged in');
+  }
 }

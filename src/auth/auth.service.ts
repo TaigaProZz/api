@@ -75,4 +75,9 @@ export class AuthService {
       throw err;
     }
   }
+
+  // verify token
+  async verifyTwoFactorToken(user: any, token: string): Promise<boolean> {
+    return authenticator.verify({ token, secret: user.authSecret });
+  }
 }
