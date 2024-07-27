@@ -1,7 +1,9 @@
 import * as bcrypt from 'bcrypt';
+import * as qrcode from 'qrcode';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { authenticator } from 'otplib';
 
 @Injectable()
 export class AuthService {
@@ -10,6 +12,7 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
+  // basic login
   async signIn(resEmail: string, resPassword: string): Promise<{access_token: string}> {    
     // check if user is found
     const user = await this.usersService.findByEmail(resEmail.toLowerCase());
@@ -30,6 +33,7 @@ export class AuthService {
     };
   }
   
+  // backoffice login
   async signInBackoffice(resEmail: string, resPassword: string): Promise<any> {
     // check if user is found
     const user = await this.usersService.findByEmail(resEmail.toLowerCase());
@@ -50,4 +54,25 @@ export class AuthService {
     return Promise.resolve({email: user.email});
   }
 
+  // 2fa
+  // generate secret and otpauth_url
+  async generateTwoFactorSecret(user: any) {
+    const secret = authenticator.generateSecret();    
+    const otpauthUrl = authenticator.keyuri(user.username, 'Jo', secret);
+    return {
+      secret,
+      otpauthUrl,
+    };
+  }
+
+  // generate qrcode
+  async generateQrCode(otpauth: string): Promise<string> {
+    try {      
+      const imageUrl = await qrcode.toDataURL(otpauth);
+      return imageUrl;
+    } catch (err) {
+      console.log('Error with QR');
+      throw err;
+    }
+  }
 }

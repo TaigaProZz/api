@@ -40,4 +40,8 @@ export class UsersService {
   remove(id: number) {
     return this.userRepository.delete(id);
   }
+
+  async saveTwoFactorSecret(userId: number, secret: string){
+    return await this.userRepository.update(userId, { authSecret: secret });
+  }
 }

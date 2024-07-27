@@ -30,6 +30,9 @@ export class User extends BaseEntity{
   @Column({ default: false })
   doubleAuthActive: boolean;
 
+  @Column({nullable: true})
+  authSecret: string;
+
   @Column()
   permissionId: number;
   

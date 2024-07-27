@@ -1,4 +1,4 @@
-import { IsBoolean, IsEmail, IsEmpty, IsString, IsStrongPassword, Min } from "class-validator";
+import { IsEmail, IsEmpty, IsString } from "class-validator";
 
 export class CreateUserDto {
   @IsEmail()
@@ -14,6 +14,9 @@ export class CreateUserDto {
 
   @IsEmpty()
   doubleAuthActive: boolean;
+
+  @IsEmpty()
+  authSecret: string;
 
   permissionId: number;
 }
