@@ -42,6 +42,6 @@ export class UsersService {
   }
 
   async saveTwoFactorSecret(userId: number, secret: string){
-    return await this.userRepository.update(userId, { authSecret: secret });
+    return await this.userRepository.update(userId, { authSecret: secret, doubleAuthActive: true });
   }
 }
