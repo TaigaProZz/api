@@ -31,6 +31,7 @@ export class User extends BaseEntity{
   doubleAuthActive: boolean;
 
   @Column({nullable: true})
+  @Exclude()
   authSecret: string;
 
   @Column()

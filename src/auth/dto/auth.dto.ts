@@ -6,4 +6,6 @@ export class AuthDto {
 
   @IsNotEmpty()
   password: string;
+
+  otpCode: string;
 }

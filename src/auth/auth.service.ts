@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import * as qrcode from 'qrcode';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { authenticator } from 'otplib';
@@ -13,10 +13,10 @@ export class AuthService {
   ) {}
 
   // basic login
-  async signIn(resEmail: string, resPassword: string): Promise<{access_token: string}> {    
+  async signIn(resEmail: string, resPassword: string, otpCode: string) {    
     // check if user is found
     const user = await this.usersService.findByEmail(resEmail.toLowerCase());
-    if (user === null) {
+    if (user === null || user === undefined) {
       throw new UnauthorizedException("Veuillez vérifier vos identifiants de connexion.")
     }
     
@@ -25,14 +25,32 @@ export class AuthService {
     if (!passMatch) {
       throw new UnauthorizedException("Veuillez vérifier vos identifiants de connexion.")
     }
-  
+
+    // check if 2fa is activated
+    if(!user.doubleAuthActive) {
+      const token = await this.createToken(user);
+      return { message: "2fa is not activated.", access_token: token.access_token };
+    }
+
+    // check if 2fa code is provided
+    if(!otpCode) {
+      throw new BadRequestException("2fa code needed.")
+    }
+    // if 2fa is provided, verify otp code
+    const isVerified = await this.verifyTwoFactorToken(user, otpCode);
+    if (!isVerified) {
+      throw new UnauthorizedException("Invalid 2fa token.")
+    }
+    return this.createToken(user);
+  }
+
+  async createToken(user: any): Promise<{ access_token: string }> {
     const payload = { id: user.id, username: user.email, permission: user.permission.name };
-    
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
-  
+
   // backoffice login
   async signInBackoffice(resEmail: string, resPassword: string): Promise<any> {
     // check if user is found
@@ -77,7 +95,7 @@ export class AuthService {
   }
 
   // verify token
-  async verifyTwoFactorToken(user: any, token: string): Promise<boolean> {
+  async verifyTwoFactorToken(user: any, token: string): Promise<Boolean> {    
     return authenticator.verify({ token, secret: user.authSecret });
   }
 }

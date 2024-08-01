@@ -1,4 +1,4 @@
-import { Body, Controller, Post, HttpCode, HttpStatus, Res, Req } from '@nestjs/common';
+import { Body, Controller, Post, HttpCode, HttpStatus, Res, Req, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { Public } from 'src/decorators/publicRoute.decorator';
@@ -13,36 +13,35 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Public()
   @Post('login')
-  async signIn(@Body() signInDto: AuthDto, @Res() res: Response) {    
-    const serviceResponse = await this.authService.signIn(signInDto.email, signInDto.password);
-
+  async signIn(@Body() signInDto: AuthDto, @Res() res: Response) {   
+    // check credentials and retrieve generated token
+    const serviceResponse = await this.authService.signIn(signInDto.email, signInDto.password, signInDto.otpCode);
     const token = serviceResponse.access_token;
+
+    // set cookie
     res.cookie('session', token, {
       httpOnly: true,
       secure: true,
       path: '/',
       sameSite: 'none',
     })
+    
+    if (serviceResponse.message === "2fa is not activated.") {      
+      return res.status(200).send("2fa is not activated.")
+    }
     return res.status(200).send("Successfully logged in !")
   }
-
-  @Post('logout')
-  logout(@Res() res: Response) {
-    res.clearCookie('session');
-    return res.status(200).send('Successfully logged out')
-  }
-
 
   // 2fa 
   // to create qr code
   @Post('2fa/setup')
-  async setupTwoFactorAuthentication(@Req() req: Request, @Res() res: Response) {
+  async setupTwoFactorAuthentication(@Req() req: Request) {
     try {
       const user = req.user;
       
       const getUser = await this.usersService.findByEmail(user.username);
       if (getUser.doubleAuthActive) {
-        return res.status(400).send({ message: '2FA is already enabled' });
+        return new BadRequestException({ message: '2FA is already enabled' });
       }
 
       // generate secret and otpauth_url
@@ -53,27 +52,36 @@ export class AuthController {
 
       // generate qrcode and send it
       const qrcode = await this.authService.generateQrCode(otpauthUrl);
-      return res.status(200).send({ qrcode: qrcode });
+      return { qrcode: qrcode };
     } catch (error) {
       console.log('Error in generating QR code', error);
-      return res.status(500).send({ message: 'Error in generating QR code' });
+      return new InternalServerErrorException({ message: 'Error in generating QR code' });
     }
   }
 
   // to verify the otp token
   @Post('2fa/verify')
   async verifyTwoFactorAuthentication(@Req() req: Request, @Body() doubleFaVerifyDto: DoubleFaVerifyDto, @Res() res: Response) {
-    const user = req.user; 
+    const user = req.user;
 
     const getUser = await this.usersService.findByEmail(user.username);
-    if (!getUser.doubleAuthActive) {
-      return res.status(400).send({ message: '2FA is not enabled' });
-    }    
+
     const isValid = await this.authService.verifyTwoFactorToken(getUser, doubleFaVerifyDto.token);
     if (!isValid) {
       return res.status(400).send('Invalid 2FA token');
     }
 
-    return res.status(200).send('2FA successfully verified and logged in');
+    // if user 2fa is not active, activate it
+    if (!getUser.doubleAuthActive) {
+      await this.usersService.activateTwoFactor(user.id);
+    }
+
+    return res.status(200).send('2FA successfully verified.');
+  }
+
+  @Post('logout')
+  logout(@Res() res: Response) {
+    res.clearCookie('session');
+    return res.status(200).send('Successfully logged out')
   }
 }

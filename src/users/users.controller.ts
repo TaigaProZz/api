@@ -43,11 +43,21 @@ export class UsersController {
   @Get()
   async findOne(@Req() req: Request) {        
     try {      
-      return this.usersService.findOne(+req?.user.id);
+      const user = await this.usersService.findOne(+req?.user.id);      
+
+      // if 2fa is not activated, throw an error and don't fetch user data
+      if(!user.doubleAuthActive) {
+        throw new BadRequestException('2fa is not activated');
+      }
+      
+      return user;
     } catch (error) {
       console.log("error fetching user : ", error.message);
       if (error.message === 'invalid token') {
         throw new NotFoundException('Bad token');
+      }
+      if (error.message === '2fa is not activated') {
+        throw new BadRequestException('2fa is not activated');
       }
     }
   }
