@@ -1,9 +1,9 @@
 import { Body, Controller, Post, HttpCode, HttpStatus, Res, Req, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
-import { Public } from 'src/decorators/publicRoute.decorator';
+import { Public } from '../decorators/publicRoute.decorator';
 import { Response } from 'express';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { DoubleFaVerifyDto } from './dto/doubleFa-verify.dto';
 
 @Controller('auth')
@@ -35,9 +35,9 @@ export class AuthController {
   // 2fa 
   // to create qr code
   @Post('2fa/setup')
-  async setupTwoFactorAuthentication(@Req() req: Request) {
+  async setupTwoFactorAuthentication(@Req() req) {
     try {
-      const user = req.user;
+      const user = req?.user;
       
       const getUser = await this.usersService.findByEmail(user.username);
       if (getUser.doubleAuthActive) {
@@ -61,7 +61,7 @@ export class AuthController {
 
   // to verify the otp token
   @Post('2fa/verify')
-  async verifyTwoFactorAuthentication(@Req() req: Request, @Body() doubleFaVerifyDto: DoubleFaVerifyDto, @Res() res: Response) {
+  async verifyTwoFactorAuthentication(@Req() req, @Body() doubleFaVerifyDto: DoubleFaVerifyDto, @Res() res: Response) {
     const user = req.user;
 
     const getUser = await this.usersService.findByEmail(user.username);

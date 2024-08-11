@@ -1,5 +1,5 @@
-import { TicketsBought } from 'src/tickets_bought/entities/tickets_bought.entity';
-import { Permission } from 'src/permissions/entities/permission.entity';
+import { TicketsBought } from '../../tickets_bought/entities/tickets_bought.entity';
+import { Permission } from '../../permissions/entities/permission.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Generated, Unique, OneToMany, BaseEntity } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
@@ -41,7 +41,7 @@ export class User extends BaseEntity{
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  permission: Permission[];
+  permission: Permission;
 
   @OneToMany(() => TicketsBought, ticketBought => ticketBought.user, { onDelete: 'CASCADE' })
   ticketsBought: TicketsBought;

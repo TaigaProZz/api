@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Req, RawBodyRequest} from '@nestjs/common';
+import { Controller, Post, Body, Req, RawBodyRequest} from '@nestjs/common';
 import { StripeService } from './stripe.service';
 import { Public } from 'src/decorators/publicRoute.decorator';
 import { TicketsBoughtService } from 'src/tickets_bought/tickets_bought.service';
@@ -11,7 +11,7 @@ export class StripeController {
   ) {}
 
   @Post()
-  async createSession(@Body() body: any, @Req() req: Request): Promise<{ url: string }> {
+  async createSession(@Body() body: any, @Req() req): Promise<{ url: string }> {
     try {
       const session = await this.stripeService.createCheckout(body, req?.user.id);
       return { url: session.url };

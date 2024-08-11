@@ -1,6 +1,6 @@
 import { Exclude } from "class-transformer";
-import { Ticket } from "src/tickets/entities/ticket.entity";
-import { User } from "src/users/entities/users.entity";
+import { Ticket } from "../../tickets/entities/ticket.entity";
+import { User } from "../../users/entities/users.entity";
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 @Entity()

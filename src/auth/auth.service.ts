@@ -4,6 +4,7 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { authenticator } from 'otplib';
+import { User } from 'src/users/entities/users.entity';
 
 @Injectable()
 export class AuthService {
@@ -44,9 +45,10 @@ export class AuthService {
     return this.createToken(user);
   }
 
-  async createToken(user: any): Promise<{ access_token: string }> {
-    const payload = { id: user.id, username: user.email, permission: user.permission.name };
+  async createToken(user: User): Promise<{message: string, access_token: string }> {    
+    const payload = { id: user.id, username: user.email };
     return {
+      message: "Successfully logged in !",
       access_token: await this.jwtService.signAsync(payload),
     };
   }
@@ -58,16 +60,18 @@ export class AuthService {
     if (user === null) {
       throw new UnauthorizedException("Veuillez vérifier vos identifiants de connexion.")
     }
-    
-    if(user.permission.name !== 'admin') {
-      throw new UnauthorizedException("Veuillez vérifier vos identifiants de connexion.")
-    }
 
     // compare passwords
     const passMatch = await bcrypt.compare(resPassword, user?.password);
     if (!passMatch) {
       throw new UnauthorizedException("Veuillez vérifier vos identifiants de connexion.")
     }
+
+    // check if user is admin
+    if (user.permission.name !== 'admin') {
+      throw new UnauthorizedException("Veuillez vérifier vos identifiants de connexion.")
+    }
+
 
     return Promise.resolve({email: user.email});
   }

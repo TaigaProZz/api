@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { Controller, Get, Post, Body, Param, Delete, BadRequestException, Put, UsePipes, ValidationPipe, Res, Response, Req, NotFoundException, ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, BadRequestException, Put, UsePipes, ValidationPipe, Req, NotFoundException, ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -41,7 +41,7 @@ export class UsersController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
-  async findOne(@Req() req: Request) {        
+  async findOne(@Req() req) {        
     try {      
       const user = await this.usersService.findOne(+req?.user.id);      
 
