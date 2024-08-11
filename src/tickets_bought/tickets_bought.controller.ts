@@ -26,6 +26,7 @@ export class TicketsBoughtController {
     return this.ticketsBoughtService.findAll();
   }
 
+  // to get specific ticket when qr code is scanned
   // @Permissions('admin')
   // @Get('all/:id')
   // findOneAdmin(@Param('id') id: string) {
