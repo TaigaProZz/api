@@ -45,60 +45,60 @@ describe('AuthService', () => {
   it('should throw UnauthorizedException if user is not found', async () => {
     (usersService.findByEmail as jest.Mock).mockResolvedValue(null);
 
-    await expect(authService.signIn('test@example.com', 'password', ''))
+    await expect(authService.signIn('blabla@gmail.com', 'password', ''))
       .rejects
       .toThrow(UnauthorizedException);
   });
 
   it('should throw UnauthorizedException if password does not match', async () => {
-    const mockUser = { email: 'test@example.com', password: 'hashedpassword' };
+    const mockUser = { email: 'blabla@gmail.com', password: 'hashedpassword' };
     (usersService.findByEmail as jest.Mock).mockResolvedValue(mockUser);
     (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
-    await expect(authService.signIn('test@example.com', 'wrongpassword', ''))
+    await expect(authService.signIn('blabla@gmail.com', 'wrongpassword', ''))
       .rejects
       .toThrow(UnauthorizedException);
   });
 
   it('should return token if 2FA is not activated', async () => {
-    const mockUser = { email: 'test@example.com', password: 'hashedpassword', doubleAuthActive: false };
+    const mockUser = { email: 'blabla@gmail.com', password: 'hashedpassword', doubleAuthActive: false };
     (usersService.findByEmail as jest.Mock).mockResolvedValue(mockUser);
     (bcrypt.compare as jest.Mock).mockResolvedValue(true);
     (jwtService.signAsync as jest.Mock).mockResolvedValue('token');
 
-    const result = await authService.signIn('test@example.com', 'password', '');
+    const result = await authService.signIn('blabla@gmail.com', 'password', '');
     expect(result).toEqual({ message: '2fa is not activated.', access_token: 'token' });
   });
 
   it('should throw BadRequestException if 2FA code is missing', async () => {
-    const mockUser = { email: 'test@example.com', password: 'hashedpassword', doubleAuthActive: true };
+    const mockUser = { email: 'blabla@gmail.com', password: 'hashedpassword', doubleAuthActive: true };
     (usersService.findByEmail as jest.Mock).mockResolvedValue(mockUser);
     (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
-    await expect(authService.signIn('test@example.com', 'password', ''))
+    await expect(authService.signIn('blabla@gmail.com', 'password', ''))
       .rejects
       .toThrow(BadRequestException);
   });
 
   it('should throw UnauthorizedException if 2FA code is invalid', async () => {
-    const mockUser = { email: 'test@example.com', password: 'hashedpassword', doubleAuthActive: true, authSecret: 'secret' };
+    const mockUser = { email: 'blabla@gmail.com', password: 'hashedpassword', doubleAuthActive: true, authSecret: 'secret' };
     (usersService.findByEmail as jest.Mock).mockResolvedValue(mockUser);
     (bcrypt.compare as jest.Mock).mockResolvedValue(true);
     (authenticator.verify as jest.Mock).mockReturnValue(false);
 
-    await expect(authService.signIn('test@example.com', 'password', 'wrongcode'))
+    await expect(authService.signIn('blabla@gmail.com', 'password', 'wrongcode'))
       .rejects
       .toThrow(UnauthorizedException);
   });
 
   it('should return token if 2FA code is valid', async () => {
-    const mockUser = { email: 'test@example.com', password: 'hashedpassword', doubleAuthActive: true, authSecret: 'secret' };
+    const mockUser = { email: 'blabla@gmail.com', password: 'hashedpassword', doubleAuthActive: true, authSecret: 'secret' };
     (usersService.findByEmail as jest.Mock).mockResolvedValue(mockUser);
     (bcrypt.compare as jest.Mock).mockResolvedValue(true);
     (authenticator.verify as jest.Mock).mockReturnValue(true);
     (jwtService.signAsync as jest.Mock).mockResolvedValue('token');
 
-    const result = await authService.signIn('test@example.com', 'password', 'test');
+    const result = await authService.signIn('blabla@gmail.com', 'password', 'test');
     expect(result).toEqual({ message: 'Successfully logged in !', access_token: 'token' });
   });
 
