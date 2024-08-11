@@ -71,21 +71,4 @@ export class StripeService {
 
     return lineItems.data[0].price.id;
   }
-
-
-  findAll() {
-    return `This action returns all stripe`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} stripe`;
-  }
-
-  update() {
-    return `This action updates a #${id} stripe`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} stripe`;
-  }
 }
