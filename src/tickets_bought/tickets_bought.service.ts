@@ -1,12 +1,11 @@
 import { Injectable, ParseUUIDPipe } from '@nestjs/common';
 import { CreateTicketsBoughtDto } from './dto/create-tickets_bought.dto';
-import { UpdateTicketsBoughtDto } from './dto/update-tickets_bought.dto';
 import { TicketsBought } from './entities/tickets_bought.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { v4 as uuidv4 } from 'uuid'
-import { UsersService } from 'src/users/users.service';
-import { TicketsService } from 'src/tickets/tickets.service';
+import { UsersService } from '../users/users.service';
+import { TicketsService } from '../tickets/tickets.service';
 
 @Injectable()
 export class TicketsBoughtService {
@@ -24,7 +23,7 @@ export class TicketsBoughtService {
 
       // get generated key of user with user id passed in metadata in webhook
       const userGeneratedKey = (await this.userService.findOne(response.userId)).generatedKey;
-
+  
       // get ticket id with price id fetch before in webhook
       const ticketId = (await this.ticketService.findByPriceId(response.stripePriceId)).id;
 

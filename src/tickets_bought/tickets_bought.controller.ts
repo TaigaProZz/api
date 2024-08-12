@@ -1,6 +1,6 @@
 import { Controller, Get, Req, NotFoundException, ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
 import { TicketsBoughtService } from './tickets_bought.service';
-import { Permissions } from 'src/decorators/permission.decorator';
+import { Permissions } from '../decorators/permission.decorator';
 
 @Controller('tickets-bought')
 export class TicketsBoughtController {
