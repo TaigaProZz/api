@@ -29,37 +29,37 @@ import { AuthService } from './auth/auth.service';
 @Module({
   imports: [
     // dashboard adminjs
-    dynamicImport('@adminjs/nestjs').then(({ AdminModule }) => AdminModule.createAdminAsync({
-      imports: [UsersModule, AuthModule, ConfigModule],
-      useFactory: (authService: AuthService, configService: ConfigService) => ({
-        adminJsOptions: {
-          rootPath: '/admin',
-          resources: [
-            { resource: Ticket },
-            { resource: TicketsBought },
-            // add user resource but hide it in the admin panel
-            { resource: User, options: { navigation: false}},
-          ],
-        },
-        auth: {
-          authenticate: async (email, password) => {    
-            try {
-              return await authService.signInBackoffice(email, password);
-            } catch (error) {
-              return null;
-            }
-          },
-          cookieName: 'adminjs', 
-          cookiePassword: configService.get<string>('adminjsCookiePassword')
-        },
-        sessionOptions: {
-          resave: true,
-          saveUninitialized: true,
-          secret: configService.get<string>('adminJsSessionSecret')
-        },
-      }),
-      inject: [AuthService, ConfigService],  
-    })),
+    // dynamicImport('@adminjs/nestjs').then(({ AdminModule }) => AdminModule.createAdminAsync({
+    //   imports: [UsersModule, AuthModule, ConfigModule],
+    //   useFactory: (authService: AuthService, configService: ConfigService) => ({
+    //     adminJsOptions: {
+    //       rootPath: '/admin',
+    //       resources: [
+    //         { resource: Ticket },
+    //         { resource: TicketsBought },
+    //         // add user resource but hide it in the admin panel
+    //         { resource: User, options: { navigation: false}},
+    //       ],
+    //     },
+    //     auth: {
+    //       authenticate: async (email, password) => {    
+    //         try {
+    //           return await authService.signInBackoffice(email, password);
+    //         } catch (error) {
+    //           return null;
+    //         }
+    //       },
+    //       cookieName: 'adminjs', 
+    //       cookiePassword: configService.get<string>('adminjsCookiePassword')
+    //     },
+    //     sessionOptions: {
+    //       resave: true,
+    //       saveUninitialized: true,
+    //       secret: configService.get<string>('adminJsSessionSecret')
+    //     },
+    //   }),
+    //   inject: [AuthService, ConfigService],  
+    // })),
     // config
     ConfigModule.forRoot({
       isGlobal: true,

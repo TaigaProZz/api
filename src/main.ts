@@ -23,16 +23,16 @@ async function bootstrap() {
     disableErrorMessages: true,
   }));
 
-  // adminjs
-  const adminJSModule = await dynamicImport('adminjs');
-  const AdminJS = adminJSModule.default;
+  // // adminjs
+  // const adminJSModule = await dynamicImport('adminjs');
+  // const AdminJS = adminJSModule.default;
 
-  const AdminJSTypeorm = await dynamicImport('@adminjs/typeorm');
+  // const AdminJSTypeorm = await dynamicImport('@adminjs/typeorm');
 
-  AdminJS.registerAdapter({
-    Resource: AdminJSTypeorm.Resource,
-    Database: AdminJSTypeorm.Database,
-  });
+  // AdminJS.registerAdapter({
+  //   Resource: AdminJSTypeorm.Resource,
+  //   Database: AdminJSTypeorm.Database,
+  // });
 
   // cookie handler
   app.use(
