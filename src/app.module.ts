@@ -77,7 +77,10 @@ import { AuthService } from './auth/auth.service';
         database: configService.get<string>('database.database'),
         synchronize: true, // delete in production
         logging: true,
-        autoLoadEntities: true
+        autoLoadEntities: true,
+        ssl: {
+          rejectUnauthorized: false, 
+        }
       }),
       inject: [ConfigService]
     }),
