@@ -99,7 +99,11 @@ export class AuthService {
   }
 
   // verify token
-  async verifyTwoFactorToken(user: any, token: string): Promise<Boolean> {    
+  async verifyTwoFactorToken(user: any, token: string): Promise<Boolean> {   
+    if (user.authSecret === null) {
+      throw new BadRequestException('2fa is not activated');
+    }
+     
     return authenticator.verify({ token, secret: user.authSecret });
   }
 }
