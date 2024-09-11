@@ -98,8 +98,32 @@ describe('AuthService', () => {
     (authenticator.verify as jest.Mock).mockReturnValue(true);
     (jwtService.signAsync as jest.Mock).mockResolvedValue('token');
 
-    const result = await authService.signIn('blabla@gmail.com', 'password', 'test');
+    const result = await authService.signIn('blabla@gmail.com', 'password', 'validcode');
     expect(result).toEqual({ message: 'Successfully logged in !', access_token: 'token' });
   });
+
+  describe('AuthService - verifyTwoFactorCode', () => {
+    it('should throw UnauthorizedException if 2FA code is invalid', async () => {
+      const user = { authSecret: 'secret' };
+      const token = 'invalidcode';
+
+      (authenticator.verify as jest.Mock).mockReturnValue(false);
+
+      await expect(authService.verifyTwoFactorToken(user, token))
+        .rejects
+        .toThrow(UnauthorizedException);
+    });
+
+    it('should return true if 2FA code is valid', async () => {
+      const user = { authSecret: 'secret' };
+      const token = 'validcode';
+
+      (authenticator.verify as jest.Mock).mockReturnValue(true);
+
+      const result = await authService.verifyTwoFactorToken(user, token);
+      expect(result).toBe(true);
+    });
+  });
+
 
 });

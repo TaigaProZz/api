@@ -48,6 +48,34 @@ describe('AuthController', () => {
   });
 
   describe('signIn', () => {
+    it('should return a bad request error for invalid DTO', async () => {
+      const invalidAuthDto: any = { email: 'invalidemail', password: '', otpCode: '' };
+
+      try {
+        await authController.signIn(invalidAuthDto, response as Response);
+      } catch (e) {
+        expect(e).toBeInstanceOf(TypeError);
+      }
+    });
+  });
+
+  describe('verifyTwoFactorAuthentication', () => {
+    it('should handle expired 2FA token', async () => {
+      const req: any = { user: { username: 'blabla@gmail.com' } };
+      const doubleFaVerifyDto: DoubleFaVerifyDto = { token: 'expiredtoken' };
+      const user = { doubleAuthActive: false };
+
+      usersService.findByEmail = jest.fn().mockResolvedValue(user);
+      authService.verifyTwoFactorToken = jest.fn().mockResolvedValue(false);
+
+      await authController.verifyTwoFactorAuthentication(req, doubleFaVerifyDto, response as Response);
+
+      expect(response.status).toHaveBeenCalledWith(400);
+      expect(response.send).toHaveBeenCalledWith('Invalid 2FA token');
+    });
+  });
+
+  describe('signIn', () => {
     it('should login and set cookie', async () => {
       const authDto: AuthDto = { email: 'blabla@gmail.com', password: 'password', otpCode: '123456' };
       const serviceResponse = { access_token: 'token', message: 'Success' };

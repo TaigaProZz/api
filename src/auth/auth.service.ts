@@ -100,10 +100,16 @@ export class AuthService {
 
   // verify token
   async verifyTwoFactorToken(user: any, token: string): Promise<Boolean> {   
-    if (user.authSecret === null) {
-      throw new BadRequestException('2fa is not activated');
+    if (!user.authSecret) {
+      throw new UnauthorizedException('2fa is not activated');
     }
-     
-    return authenticator.verify({ token, secret: user.authSecret });
+    
+    const isTokenValid = authenticator.verify({ token, secret: user.authSecret });
+
+    if (!isTokenValid) {
+      throw new UnauthorizedException('Invalid 2FA token');
+    }
+
+    return true;
   }
 }
