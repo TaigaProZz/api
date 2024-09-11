@@ -3,7 +3,7 @@ import { Controller, Get, Post, Body, Delete, BadRequestException, Put, UsePipes
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Public } from 'src/decorators/publicRoute.decorator';
+import { Public } from '../decorators/publicRoute.decorator';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { User } from './entities/users.entity';
@@ -43,7 +43,7 @@ export class UsersController {
   @Get()
   async findOne(@Req() req) {        
     try {      
-      const user = await this.usersService.findOne(+req?.user.id);      
+      const user = await this.usersService.findOne(+req?.user.id); 
 
       // if 2fa is not activated, throw an error and don't fetch user data
       if(!user.doubleAuthActive) {
