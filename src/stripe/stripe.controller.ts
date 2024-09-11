@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Req, RawBodyRequest} from '@nestjs/common';
 import { StripeService } from './stripe.service';
-import { Public } from 'src/decorators/publicRoute.decorator';
-import { TicketsBoughtService } from 'src/tickets_bought/tickets_bought.service';
+import { Public } from '../decorators/publicRoute.decorator';
+import { TicketsBoughtService } from '../tickets_bought/tickets_bought.service';
 
 @Controller('stripe')
 export class StripeController {

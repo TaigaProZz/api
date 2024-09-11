@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Param, Delete, Put, UsePipes, ValidationPi
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
-import { Public } from 'src/decorators/publicRoute.decorator';
-import { Permissions } from 'src/decorators/permission.decorator';
+import { Public } from '../decorators/publicRoute.decorator';
+import { Permissions } from '../decorators/permission.decorator';
 
 @Controller('ticket')
 export class TicketsController {
